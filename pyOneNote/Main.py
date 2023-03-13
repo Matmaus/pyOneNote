@@ -67,7 +67,7 @@ def get_hex_format(hex_str, col, indent):
     chars = (col*2)
     for i in range(math.ceil( len(hex_str)/chars)):
         segment = hex_str[i*chars: (i+1)*chars]
-        res += indent + ' '.join([segment[i:i+2] for i in range(0, len(segment), 2)]) +'\n'
+        res += indent + ' '.join([str(segment[i:i+2]) for i in range(0, len(segment), 2)]) +'\n'
     return res
 
 

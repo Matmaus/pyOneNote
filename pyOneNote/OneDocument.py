@@ -51,12 +51,12 @@ class OneDocument:
                 if isinstance(node.data, FileDataStoreObjectReferenceFND):
                     if not str(node.data.guidReference) in self._files:
                         self._files[str(node.data.guidReference)] = {"extension": "", "content": ""}
-                    self._files[str(node.data.guidReference)]["content"] = node.data.fileDataStoreObject.FileData
+                    self._files[str(node.data.guidReference)]["content"] = bytes(node.data.fileDataStoreObject.FileData)
                 elif isinstance(node.data, ObjectDeclarationFileData3RefCountFND):
                     guid = node.data.FileDataReference.StringData.replace("<ifndf>{", "").replace("}", "")
                     guid = guid.lower()
                     if not guid in self._files:
-                        self._files[guid] = {"extension": "", "content": ""}
+                        self._files[guid] = {"extension": "", "content": b""}
                     self._files[guid]["extension"] = node.data.Extension.StringData
         return self._files
 
