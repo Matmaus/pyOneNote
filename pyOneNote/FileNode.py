@@ -31,7 +31,10 @@ class FileNodeList:
 class FileNodeListFragment:
     def __init__(self, file, end):
         self.fileNodes = []
-        self.fileNodeListHeader = FileNodeListHeader(file)
+        try:
+            self.fileNodeListHeader = FileNodeListHeader(file)
+        except struct.error:
+            pass
 
         # FileNodeListFragment can have one or more FileNode
         while file.tell() + 24 < end:
@@ -47,7 +50,8 @@ class FileNodeListFragment:
 
         file.seek(end - 20)
         self.nextFragment = FileChunkReference64x32(file.read(12))
-        self.footer, = struct.unpack('<Q', file.read(8))
+        if not self.nextFragment.isFcrNil():
+            self.footer, = struct.unpack('<Q', file.read(8))
 
 
 class FileNodeHeader:
@@ -247,8 +251,13 @@ class FileNodeChunkReference:
 
 class FileChunkReference64x32(FileNodeChunkReference):
     def __init__(self, bytes):
-        self.stp, self.cb = struct.unpack('<QI', bytes)
         self.invalid = 0xffffffffffffffff
+        try:
+            self.stp, self.cb = struct.unpack('<QI', bytes)
+        except struct.error:
+            # Make object Nil on error.
+            self.stp = self.invalid
+            self.cb = 0
 
     def __repr__(self):
         return 'FileChunkReference64x32:(stp:{}, cb:{})'.format(self.stp, self.cb)
