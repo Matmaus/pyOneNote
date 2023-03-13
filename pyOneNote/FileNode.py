@@ -35,9 +35,14 @@ class FileNodeListFragment:
 
         # FileNodeListFragment can have one or more FileNode
         while file.tell() + 24 < end:
-            node = FileNode(file)
-            self.fileNodes.append(node)
-            if node.file_node_header.file_node_id == 255 or node.file_node_header.file_node_id == 0:
+            try:
+                node = FileNode(file)
+                self.fileNodes.append(node)
+                if node.file_node_header.file_node_id == 255 or node.file_node_header.file_node_id == 0:
+                    break
+            except Exception:
+                # Failed to parse a single node (OSError, AttributeError, MemoryError).
+                # Skip the node.
                 break
 
         file.seek(end - 20)
