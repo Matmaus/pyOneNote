@@ -48,7 +48,8 @@ class FileNodeListFragment:
                 # Skip the node.
                 break
 
-        file.seek(end - 20)
+        if end > 20:
+            file.seek(end - 20)
         self.nextFragment = FileChunkReference64x32(file.read(12))
         if not self.nextFragment.isFcrNil():
             self.footer, = struct.unpack('<Q', file.read(8))
