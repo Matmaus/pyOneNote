@@ -28,7 +28,10 @@ class FileNodeList:
             if fragment.nextFragment.isFcrNil():
                 break
             file_chunk_reference = fragment.nextFragment
-            file.seek(fragment.nextFragment.stp)
+            try:
+                file.seek(fragment.nextFragment.stp)
+            except ValueError:
+                return
 
 
 class FileNodeListFragment:
