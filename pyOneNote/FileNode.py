@@ -13,9 +13,12 @@ class FileNodeListHeader:
 
 class FileNodeList:
     def __init__(self, file, file_chunk_reference):
-        file.seek(file_chunk_reference.stp)
-        self.end = file_chunk_reference.stp + file_chunk_reference.cb
         self.fragments = []
+        try:
+            file.seek(file_chunk_reference.stp)
+        except ValueError:
+            return
+        self.end = file_chunk_reference.stp + file_chunk_reference.cb
 
         # FileNodeList can contain one or more FileNodeListFragment
         while True:
